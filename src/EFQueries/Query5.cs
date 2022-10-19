@@ -16,16 +16,21 @@ public class Query5
     {
         using var dbContext = new AppDbContext();
 
-        // As seen below can not generate all LEFT joins
-
         var query = dbContext.Retailers
-            .SelectMany(r => r.CustomerRetailers.DefaultIfEmpty().SelectMany(cr => cr.Customer.CustomerVehicles.DefaultIfEmpty()).DefaultIfEmpty(), (r, cv) => new
+            .SelectMany(r => r.CustomerRetailers.DefaultIfEmpty(), (r, cr) => new
             {
                 Id = r.Id,
                 Name = r.Name,
-                CustomerName = cv.Customer.Name,
+                Customer = cr.Customer,
+            })
+            .SelectMany(a => a.Customer.CustomerVehicles.DefaultIfEmpty(), (a, cv) => new
+            {
+                Id = a.Id,
+                Name = a.Name,
+                CustomerName = a.Customer.Name,
                 VehicleModel = cv.Vehicle.Model
             });
+
 
         var result = await query.ToListAsync();
 
@@ -34,16 +39,12 @@ public class Query5
 
         /*
          
-      SELECT [r].[Id], [r].[Name], [c2].[Name] AS [CustomerName], [v].[Model] AS [VehicleModel]
+      SELECT [r].[Id], [r].[Name], [c0].[Name] AS [CustomerName], [v].[Model] AS [VehicleModel]
       FROM [Retailers] AS [r]
-      LEFT JOIN (
-          SELECT [c1].[CustomerId], [c1].[VehicleId], [c].[RetailerId]
-          FROM [CustomerRetailers] AS [c]
-          LEFT JOIN [Customers] AS [c0] ON [c].[CustomerId] = [c0].[Id]
-          INNER JOIN [CustomerVehicles] AS [c1] ON [c0].[Id] = [c1].[CustomerId]
-      ) AS [t] ON [r].[Id] = [t].[RetailerId]
-      LEFT JOIN [Customers] AS [c2] ON [t].[CustomerId] = [c2].[Id]
-      LEFT JOIN [Vehicles] AS [v] ON [t].[VehicleId] = [v].[Id]
+      LEFT JOIN [CustomerRetailers] AS [c] ON [r].[Id] = [c].[RetailerId]
+      LEFT JOIN [Customers] AS [c0] ON [c].[CustomerId] = [c0].[Id]
+      LEFT JOIN [CustomerVehicles] AS [c1] ON [c0].[Id] = [c1].[CustomerId]
+      LEFT JOIN [Vehicles] AS [v] ON [c1].[VehicleId] = [v].[Id]
 
         */
     }
