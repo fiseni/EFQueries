@@ -8,6 +8,7 @@ await Query2.RunAsync();
 await Query3.RunAsync();
 await Query4.RunAsync();
 await Query5.RunAsync();
+await Query6.RunAsync();
 
 
 

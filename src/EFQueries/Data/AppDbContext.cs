@@ -17,7 +17,7 @@ public class AppDbContext : DbContext
     {
         var connectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=EFQueries;Integrated Security=SSPI;ConnectRetryCount=0;";
 
-        optionsBuilder.UseSqlServer(connectionString).LogTo(Console.WriteLine, LogLevel.Information);
+        optionsBuilder.EnableSensitiveDataLogging().UseSqlServer(connectionString).LogTo(Console.WriteLine, LogLevel.Information);
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

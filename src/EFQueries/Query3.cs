@@ -6,7 +6,7 @@ public class Query3
     {
         // Same as Query2, but LEFT join
 
-        PrintSeparator("QUERY 3");
+        PrintSeparator(nameof(Query3).ToUpper());
 
         await LinqExtensionsAsync();
         await LinqQueryAsync();

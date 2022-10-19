@@ -4,7 +4,7 @@ public class Query2
 {
     public static async Task RunAsync()
     {
-        PrintSeparator("QUERY 2");
+        PrintSeparator(nameof(Query2).ToUpper());
 
         await LinqExtensionsAsync();
         await LinqQueryAsync();
